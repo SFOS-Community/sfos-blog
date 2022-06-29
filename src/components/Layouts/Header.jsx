@@ -118,7 +118,7 @@ export default function Header() {
           </ul>
         </div>
         <div className="navbar-end gap-x-4">
-          <div className="dropdown-end dropdown ">
+          <div className="dropdown dropdown-end ">
             <div tabIndex="0" className="btn btn-ghost gap-1 normal-case">
               <svg
                 width="20"

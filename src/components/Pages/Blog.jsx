@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
-import DB from '../../metadata.db.json';
-import Badge from '../DataDisplay/Badge';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 export default function Blog() {
   const { id } = useParams();
   const [blog, setBlog] = useState({});
-  const [author, setAuthor] = useState({});
-  const [md, setMd] = useState('');
 
-  const getBlogAndSetAuthor = (id) => {
-    const res = DB.blogs.filter((blog) => blog.id == id)[0];
-    const fetchedBlog = res;
-    setMd(res.body);
-    setAuthor({ name: res.author });
-    return fetchedBlog;
+  const getBlogById = (id) => {
+    fetch(`${import.meta.env.VITE_API_URL}/blogs/${id}`)
+      .then((res) => res.json())
+      .then(setBlog);
   };
 
   useEffect(function () {
-    setBlog(getBlogAndSetAuthor(id));
+    getBlogById(id);
     scroll({
       top: 0,
     });
@@ -28,6 +23,13 @@ export default function Blog() {
   const handleBackBtn = () => {
     history.back();
   };
+
+  const date = new Date(blog.createdAt).toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <>
@@ -48,19 +50,23 @@ export default function Blog() {
             back
           </button>
           <article className="prose max-w-[65ch] prose-img:mx-auto prose-img:rounded-md lg:prose-lg">
-            <Badge children={blog.category} size="md" />
+            <div className="badge badge-outline badge-sm badge-primary font-medium uppercase">
+              {blog.category}
+            </div>
             <h1 className="mb-1 lg:mb-1">{blog.title}</h1>
             <p className="mt-1 font-light lg:mt-1">
-              {blog.createdAt}. By {author.name}
+              {date}. By {blog.author}
             </p>
             <figure>
               <img
-                src={blog.image}
+                src={blog.photo}
                 alt={blog.title}
                 className="rounded-md object-cover object-top"
               />
             </figure>
-            <ReactMarkdown>{md}</ReactMarkdown>
+            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+              {blog.content}
+            </ReactMarkdown>
           </article>
         </div>
       </section>

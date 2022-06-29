@@ -1,16 +1,19 @@
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TabCategories } from '../Navigation/Tab';
+import { CategoryContext } from '../../Context';
+import categories from '../../config/categories';
+import { Link } from 'react-router-dom';
+import { useDebouncedValue, useInputState } from '@mantine/hooks';
 
-export default function Hero({ choosenCategory }) {
+export default function Hero({ setReading }) {
+  const category = useContext(CategoryContext);
   const navigate = useNavigate();
+  const [query, setQuery] = useInputState('');
+  const [debouncedQuery] = useDebouncedValue(query, 200);
 
-  const handleSearchInput = (ev) => {
-    navigate(
-      `/?q=${ev.target.value}${
-        choosenCategory ? `&category=${choosenCategory}` : ''
-      }`
-    );
-  };
+  useEffect(() => {
+    navigate(`?q=${debouncedQuery}${category ? `&category=${category}` : ''}`);
+  }, [debouncedQuery]);
 
   return (
     <section id="hero">
@@ -27,12 +30,27 @@ export default function Hero({ choosenCategory }) {
           <input
             type="search"
             placeholder="Search here"
-            onChange={handleSearchInput}
+            onChange={setQuery}
             className="input input-bordered input-primary w-full max-w-xl"
           />
         </div>
         <div>
-          <TabCategories activeCategory={choosenCategory} />
+          <div className="tabs tabs-boxed mx-auto w-fit gap-4 [&>a]:tab [&>a]:uppercase [&>a]:outline-none [&>a]:transition-all [&>a]:duration-300">
+            {categories.map((value) => (
+              <Link
+                onClick={() => setReading(false)}
+                to={value === 'all' ? '' : '/?category='.concat(value)}
+                key={value}
+                className={
+                  (category === null && value === 'all') || category === value
+                    ? 'tab-active'
+                    : undefined
+                }
+              >
+                {value}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>

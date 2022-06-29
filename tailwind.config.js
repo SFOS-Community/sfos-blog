@@ -7,7 +7,17 @@ module.exports = {
         center: true,
         padding: '1rem',
       },
+      fontFamily: {
+        sans: ['Arial'],
+      },
     },
   },
-  plugins: [require('@tailwindcss/typography'), require('daisyui')],
+  corePlugins: {
+    preflight: false,
+  },
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/typography'),
+    require('daisyui'),
+  ],
 };
