@@ -18,14 +18,14 @@ export default function App() {
       <BlogsContext.Provider value={blogs}>
         <Routes>
           <Route
-            index
+            path="/sfos-blog/"
             element={
               <ReadingContext.Provider value={reading}>
                 <HomeBlog setBlogs={setBlogs} setReading={setReading} />
               </ReadingContext.Provider>
             }
           />
-          <Route path="blog/:id" element={<Blog />} />
+          <Route path="/sfos-blog/blog/:id" element={<Blog />} />
         </Routes>
       </BlogsContext.Provider>
       <ToTopButton />

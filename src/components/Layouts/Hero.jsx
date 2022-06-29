@@ -39,7 +39,7 @@ export default function Hero({ setReading }) {
             {categories.map((value) => (
               <Link
                 onClick={() => setReading(false)}
-                to={value === 'all' ? '' : '/?category='.concat(value)}
+                to={value === 'all' ? '' : '?category='.concat(value)}
                 key={value}
                 className={
                   (category === null && value === 'all') || category === value
